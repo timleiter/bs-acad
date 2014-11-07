@@ -5,3 +5,10 @@ C:\Users\james.gale\Development\BitSpring For AutoCad\BitSpring For AutoCad\obj\
 C:\Users\james.gale\Development\BitSpring For AutoCad\BitSpring For AutoCad\obj\Debug\BitSpring For AutoCad.dll
 C:\Users\james.gale\Development\BitSpring For AutoCad\BitSpring For AutoCad\obj\Debug\BitSpring For AutoCad.pdb
 C:\Users\james.gale\Development\BitSpring For AutoCad\BitSpring For AutoCad\obj\Debug\BitSpring_For_AutoCad.MyCommands.resources
+C:\Users\james.gale\Development\BitSpring For AutoCad\bs-acad\BitSpring For AutoCad\bin\Debug\BitSpring For AutoCad.dll
+C:\Users\james.gale\Development\BitSpring For AutoCad\bs-acad\BitSpring For AutoCad\bin\Debug\BitSpring For AutoCad.pdb
+C:\Users\james.gale\Development\BitSpring For AutoCad\bs-acad\BitSpring For AutoCad\obj\Debug\BitSpring For AutoCad.csprojResolveAssemblyReference.cache
+C:\Users\james.gale\Development\BitSpring For AutoCad\bs-acad\BitSpring For AutoCad\obj\Debug\BitSpring_For_AutoCad.MyCommands.resources
+C:\Users\james.gale\Development\BitSpring For AutoCad\bs-acad\BitSpring For AutoCad\obj\Debug\BitSpring For AutoCad.csproj.GenerateResource.Cache
+C:\Users\james.gale\Development\BitSpring For AutoCad\bs-acad\BitSpring For AutoCad\obj\Debug\BitSpring For AutoCad.dll
+C:\Users\james.gale\Development\BitSpring For AutoCad\bs-acad\BitSpring For AutoCad\obj\Debug\BitSpring For AutoCad.pdb

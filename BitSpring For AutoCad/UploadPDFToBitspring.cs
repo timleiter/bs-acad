@@ -15,45 +15,28 @@ namespace BitSpring_For_AutoCad
 {
     public class UploadPDFToBitspring
     {
+        private String mPdfString;
+
         public void UploadToBitSpring()
         {
-            //TODO: JPG: Figure out how to clear the message before writing the next one
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Editor ed;
             if (doc != null)
             {
                 ed = doc.Editor;
-                ed.WriteMessage("Converting the document to PDF");
+                ed.WriteMessage("\nConverting the document to PDF");
             }
 
             //Convert the current active document to PDF
             ConvertToPDF();
-
-            if (doc != null)
-            {
-                ed = doc.Editor;
-                ed.WriteMessage("Uploading to a new BitSpring Space.");
-            }
-
-            //Upload the file to BitSpring
-
-            if (doc != null)
-            {
-                ed = doc.Editor;
-                ed.WriteMessage("Opening BitSpring space in your default browser.");
-            }
-
-            //Open the space in a browser
-
-            if (doc != null)
-            {
-                ed = doc.Editor;
-                ed.WriteMessage("Please check your default browser for you BitSpring space.");
-            }
         }
 
         void ConvertToPDF()
         {
+            short bgPlot = (short)Application.GetSystemVariable("BACKGROUNDPLOT");
+
+            Application.SetSystemVariable("BACKGROUNDPLOT", 0);
+
             Document doc = Application.DocumentManager.MdiActiveDocument;
             
             using (DsdEntryCollection dsdDwgFiles = new DsdEntryCollection())
@@ -96,6 +79,7 @@ namespace BitSpring_For_AutoCad
                     // Setup the temp path variables
                     String tempPath = System.IO.Path.GetTempPath() + "Hightail\\";
                     String tempFileName = tempPath + System.IO.Path.GetFileNameWithoutExtension(doc.Name);
+                    mPdfString = tempFileName + ".pdf";
 
                     // Ensure the path exists
                     if (!System.IO.Directory.Exists(tempPath))
@@ -104,7 +88,7 @@ namespace BitSpring_For_AutoCad
                     }
 
                     // Set the target information for publishing
-                    dsdFileData.DestinationName = tempFileName + ".pdf";
+                    dsdFileData.DestinationName = mPdfString;
                     dsdFileData.ProjectPath = tempPath;
                     dsdFileData.SheetType = SheetType.MultiPdf;
 
@@ -124,11 +108,13 @@ namespace BitSpring_For_AutoCad
 
                         using (DsdData dsdDataFile = new DsdData())
                         {
-                            dsdDataFile.ReadDsd(System.IO.Path.GetTempPath() + "\\Hightail\\" + System.IO.Path.GetFileNameWithoutExtension(doc.Name) + ".dsd");
+                            dsdDataFile.ReadDsd(tempFileName + ".dsd");
 
                             // Get the DWG to PDF.pc3 and use it as a 
                             // device override for all the layouts
                             PlotConfig acPlCfg = PlotConfigManager.SetCurrentConfig("DWG to PDF.PC3");
+
+                            Application.Publisher.EndPublish += new Autodesk.AutoCAD.Publishing.EndPublishEventHandler(Publisher_EndPublish);
 
                             Application.Publisher.PublishExecute(dsdDataFile, acPlCfg);
                         }
@@ -138,6 +124,38 @@ namespace BitSpring_For_AutoCad
                         System.Windows.Forms.MessageBox.Show(es.Message);
                     }
                 }
+            }
+
+            //reset the background plot value
+            Application.SetSystemVariable("BACKGROUNDPLOT", bgPlot);
+        }
+
+        private void Publisher_EndPublish(object sender, PublishEventArgs e)
+        {
+            // Now that the PDF is written we need to upload that to the server, carry on processing that upload here.
+            Document doc = Application.DocumentManager.MdiActiveDocument;
+            Editor ed;
+            
+            if (doc != null)
+            {
+                ed = doc.Editor;
+                ed.WriteMessage("\nUploading to a new BitSpring Space.");
+            }
+
+            //Upload the file to BitSpring
+
+            if (doc != null)
+            {
+                ed = doc.Editor;
+                ed.WriteMessage("\nOpening BitSpring space in your default browser.");
+            }
+
+            //Open the space in a browser
+
+            if (doc != null)
+            {
+                ed = doc.Editor;
+                ed.WriteMessage("\nPlease check your default browser for you BitSpring space.");
             }
         }
     }
