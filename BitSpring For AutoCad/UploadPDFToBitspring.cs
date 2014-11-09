@@ -13,9 +13,21 @@ using Autodesk.AutoCAD.Publishing;
 
 namespace BitSpring_For_AutoCad
 {
-    public class UploadPDFToBitspring
+    public class UploadPDFToBitSpring
     {
         private String mPdfString;
+        private String mTempPath;
+        private String mFileName;
+
+        public UploadPDFToBitSpring()
+        {
+            Application.Publisher.EndPublish += new Autodesk.AutoCAD.Publishing.EndPublishEventHandler(Publisher_EndPublish);
+        }
+
+        ~UploadPDFToBitSpring()
+        {
+            Application.Publisher.EndPublish -= new Autodesk.AutoCAD.Publishing.EndPublishEventHandler(Publisher_EndPublish);
+        }
 
         public void UploadToBitSpring()
         {
@@ -77,19 +89,20 @@ namespace BitSpring_For_AutoCad
                 using (DsdData dsdFileData = new DsdData())
                 {
                     // Setup the temp path variables
-                    String tempPath = System.IO.Path.GetTempPath() + "Hightail\\";
-                    String tempFileName = tempPath + System.IO.Path.GetFileNameWithoutExtension(doc.Name);
+                    mTempPath = System.IO.Path.GetTempPath() + "Hightail\\";
+                    mFileName = System.IO.Path.GetFileNameWithoutExtension(doc.Name);
+                    String tempFileName = mTempPath + mFileName;
                     mPdfString = tempFileName + ".pdf";
 
                     // Ensure the path exists
-                    if (!System.IO.Directory.Exists(tempPath))
+                    if (!System.IO.Directory.Exists(mTempPath))
                     {
-                        System.IO.Directory.CreateDirectory(tempPath);
+                        System.IO.Directory.CreateDirectory(mTempPath);
                     }
 
                     // Set the target information for publishing
                     dsdFileData.DestinationName = mPdfString;
-                    dsdFileData.ProjectPath = tempPath;
+                    dsdFileData.ProjectPath = mTempPath;
                     dsdFileData.SheetType = SheetType.MultiPdf;
 
                     // Set the drawings that should be added to the publication
@@ -98,8 +111,26 @@ namespace BitSpring_For_AutoCad
                     // Set the general publishing properties
                     dsdFileData.LogFilePath = tempFileName + "-Log.txt";
 
+                    String dsdFile = tempFileName + ".dsd";
+
                     // Create the DSD file
-                    dsdFileData.WriteDsd(tempFileName + ".dsd");
+                    dsdFileData.WriteDsd(dsdFile);
+
+                    //Stop the prompt for file name from showing
+                    System.IO.StreamReader streamReader =
+                        new System.IO.StreamReader(dsdFile);
+
+                    string str = streamReader.ReadToEnd();
+                    streamReader.Close();
+
+                    str = str.Replace(
+                        "PromptForDwfName=TRUE", "PromptForDwfName=FALSE");
+
+                    System.IO.StreamWriter steamWriter =
+                        new System.IO.StreamWriter(dsdFile);
+
+                    steamWriter.Write(str);
+                    steamWriter.Close();
 
                     try
                     {
@@ -108,13 +139,11 @@ namespace BitSpring_For_AutoCad
 
                         using (DsdData dsdDataFile = new DsdData())
                         {
-                            dsdDataFile.ReadDsd(tempFileName + ".dsd");
+                            dsdDataFile.ReadDsd(dsdFile);
 
                             // Get the DWG to PDF.pc3 and use it as a 
                             // device override for all the layouts
                             PlotConfig acPlCfg = PlotConfigManager.SetCurrentConfig("DWG to PDF.PC3");
-
-                            Application.Publisher.EndPublish += new Autodesk.AutoCAD.Publishing.EndPublishEventHandler(Publisher_EndPublish);
 
                             Application.Publisher.PublishExecute(dsdDataFile, acPlCfg);
                         }
@@ -143,6 +172,8 @@ namespace BitSpring_For_AutoCad
             }
 
             //Upload the file to BitSpring
+            BitSpringAPI bitspringAPI = new BitSpringAPI();
+            String spaceURL = bitspringAPI.CreateNewSpace(mPdfString, mFileName);
 
             if (doc != null)
             {
@@ -151,11 +182,19 @@ namespace BitSpring_For_AutoCad
             }
 
             //Open the space in a browser
+            System.Diagnostics.Process.Start(spaceURL);
 
             if (doc != null)
             {
                 ed = doc.Editor;
                 ed.WriteMessage("\nPlease check your default browser for you BitSpring space.");
+            }
+
+            //Clean up the temp files
+            String[] filePaths = System.IO.Directory.GetFiles(mTempPath);
+            foreach (String filePath in filePaths)
+            {
+                System.IO.File.Delete(filePath);
             }
         }
     }

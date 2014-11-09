@@ -29,12 +29,19 @@ namespace BitSpring_For_AutoCad
         // NOTE: CommandMethod has overloads where you can provide helpid and
         // context menu.
 
+        private UploadPDFToBitSpring mBitspringUpload;
+
+        public MyCommands()
+        {
+            mBitspringUpload = new UploadPDFToBitSpring();
+        }
+
         // Command to use the active document and upload it to a bitspring space
         [CommandMethod("UploadToBitSpring")]
         public void UploadToBitSpring()
         {
-            UploadPDFToBitspring bitspringUpload = new UploadPDFToBitspring();
-            bitspringUpload.UploadToBitSpring();
+            //UploadPDFToBitSpring bitspringUpload = new UploadPDFToBitSpring();
+            mBitspringUpload.UploadToBitSpring();
         }
 
     }

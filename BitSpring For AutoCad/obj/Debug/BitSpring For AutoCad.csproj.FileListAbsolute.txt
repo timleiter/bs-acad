@@ -12,3 +12,5 @@ C:\Users\james.gale\Development\BitSpring For AutoCad\bs-acad\BitSpring For Auto
 C:\Users\james.gale\Development\BitSpring For AutoCad\bs-acad\BitSpring For AutoCad\obj\Debug\BitSpring For AutoCad.csproj.GenerateResource.Cache
 C:\Users\james.gale\Development\BitSpring For AutoCad\bs-acad\BitSpring For AutoCad\obj\Debug\BitSpring For AutoCad.dll
 C:\Users\james.gale\Development\BitSpring For AutoCad\bs-acad\BitSpring For AutoCad\obj\Debug\BitSpring For AutoCad.pdb
+C:\Users\james.gale\Development\BitSpring For AutoCad\bs-acad\BitSpring For AutoCad\bin\Debug\RestSharp.dll
+C:\Users\james.gale\Development\BitSpring For AutoCad\bs-acad\BitSpring For AutoCad\bin\Debug\RestSharp.xml
